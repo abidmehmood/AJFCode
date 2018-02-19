@@ -1,0 +1,1 @@
+This directory contains the object-oriented code for systems generated using the JCode approach. Two directories provided here contain complete project files which may be imported to Eclipse or Intellij IDEA IDEs. 

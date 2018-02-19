@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Aspect xmlns="http://utm.my/serg" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://utm.my/serg D:\Copy\XMLSpy-workspace\RAM-1.2.xsd">
+	<Global>
+		<ProjectName>obss</ProjectName>
+		<AspectName>Encryption</AspectName>
+		<StructUnit>Encryptable</StructUnit>
+	</Global>
+	<StructuralView>
+		<ClassType complete="false" ID="Encryption.Encryptable">
+			<visibility/>
+			<structName>Encryptable</structName>
+			<operations>
+				<function xsi:type="Method">
+					<funcName>encrypt</funcName>
+					<isMIP>false</isMIP>
+				</function>
+				<function xsi:type="Method">
+					<funcName>decrypt</funcName>
+					<isMIP>false</isMIP>
+				</function>
+				<function xsi:type="Method">
+					<funcName>isEncrypted</funcName>
+					<isMIP>false</isMIP>
+					<returnType>boolean</returnType>
+				</function>
+			</operations>
+			<stateChartID>StateView.Encryption.Encryptable</stateChartID>
+		</ClassType>
+	</StructuralView>
+	<StateView stateViewName="StateView.Encryption">
+		<statechart-aspectual id="StateView.Encryption.Encryptable">
+			<pointcut>
+				<state>EncryptionRequired</state>
+				<state>Encrypted</state>
+				<state>Any</state>
+			</pointcut>
+			<advice>
+				<state type="actual">
+					<stateName>EncryptionRequired</stateName>
+					<transition>
+						<event>encrypt</event>
+						<action>encrypt</action>
+					</transition>
+				</state>
+				<state type="actual">
+					<stateName>Encrypted</stateName>
+					<transition>
+						<event>decrypt</event>
+						<action>decrypt</action>
+					</transition>
+				</state>
+				<state type="actual">
+					<stateName>Any</stateName>
+					<transition>
+						<event>isEncrypted</event>
+						<action>isEncrypted</action>
+					</transition>
+				</state>
+			</advice>
+		</statechart-aspectual>
+	</StateView>
+</Aspect>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Aspect xmlns="http://utm.my/serg" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://utm.my/serg D:\Copy\XMLSpy-workspace\RAM-1.2.xsd">
+	<Global>
+		<ProjectName>obss</ProjectName>
+		<AspectName>Persistence</AspectName>
+		<StructUnit>Persistable</StructUnit>
+		<StructUnit>DBManager</StructUnit>
+		<MandatoryInstParam MIPType="class">Persistable</MandatoryInstParam>
+	</Global>
+	<StructuralView>
+		<ClassType complete="false" ID="Persistence.Persistable">
+			<visibility/>
+			<structName/>
+			<operations>
+				<function xsi:type="Method">
+					<funcID>Persistence.Persistable.isUpdated</funcID>
+					<funcName>isUpdated</funcName>
+					<isMIP>false</isMIP>
+					<returnType>boolean</returnType>
+				</function>
+				<function xsi:type="Method">
+					<funcID>Persistence.Persistable.update</funcID>
+					<funcName>update</funcName>
+					<isMIP>false</isMIP>
+				</function>
+				<function xsi:type="Method">
+					<funcID>Persistence.Persistable.isUpdateRequired</funcID>
+					<funcName>isUpdateRequired</funcName>
+					<isMIP>false</isMIP>
+					<returnType>boolean</returnType>
+				</function>
+			</operations>
+			<data>
+				<field>
+					<fieldName>updated</fieldName>
+					<fieldType>boolean</fieldType>
+				</field>
+			</data>
+			<aggregation>
+				<classID>Persistence.DBManager</classID>
+				<minParticipation/>
+				<maxParticipation/>
+			</aggregation>
+			<stateChartID>StateView.Peristence.Persistable</stateChartID>
+		</ClassType>
+		<ClassType complete="true" ID="Persistence.DBManager">
+			<visibility/>
+			<structName>DBManager</structName>
+			<operations>
+				<function xsi:type="Method">
+					<funcName>initialize</funcName>
+					<isMIP>false</isMIP>
+				</function>
+				<function xsi:type="Method">
+					<funcName>persist</funcName>
+					<param paramType="Persistence.Persistable">p</param>
+					<isMIP>false</isMIP>
+				</function>
+			</operations>
+		</ClassType>
+	</StructuralView>
+	<StateView stateViewName="StateView.Persistence">
+		<statechart-aspectual id="StateView.Peristence.Persistable">
+			<pointcut>
+				<state complete="true">UpdateRequired</state>
+				<state complete="true">Updated</state>
+				<state complete="true">Any</state>
+			</pointcut>
+			<advice>
+				<state type="actual">
+					<stateName>UpdateRequired</stateName>
+					<transition>
+						<event>update</event>
+						<action>Persistence.Persistable.update</action>
+						<nextState>Updated</nextState>
+					</transition>
+				</state>
+				<state type="actual">
+					<stateName>Updated</stateName>
+					<transition>
+		</transition>
+				</state>
+				<state type="actual">
+					<stateName>Any</stateName>
+					<transition>
+						<event>isUpdated</event>
+						<action>Persistence.Persistable.isUpdated</action>
+					</transition>
+					<transition>
+						<event>isUpdateRequired</event>
+						<action>Persistence.Persistable.isUpdateRequired</action>
+					</transition>
+				</state>
+			</advice>
+		</statechart-aspectual>
+	</StateView>
+</Aspect>

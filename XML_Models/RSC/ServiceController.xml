@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Aspect xmlns="http://utm.my/serg" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://utm.my/serg D:\Copy\XMLSpy-workspace\RAM-1.2.xsd">
+	<Global>
+		<ProjectName>networkmanagement</ProjectName>
+		<AspectName>ServiceController</AspectName>
+		<DependsOn>
+			<DependsOnAspect>NetworkFailureHandler</DependsOnAspect>
+		</DependsOn>
+		<StructUnit>ServiceController</StructUnit>
+		<Instantiations>
+			<ClassInst>
+				<CMappedFrom>NetworkFailureHandler.RemoteCaller</CMappedFrom>
+				<CMappedTo>ServiceController.ServiceController</CMappedTo>
+			</ClassInst>
+			<StateInst>
+				<SMappedFrom>StateView.NetworkFailureHandler.RemoteCaller.Triable</SMappedFrom>
+				<SMappedTo>StateView.ServiceController.ServiceController.Calling</SMappedTo>
+			</StateInst>
+			<StateInst>
+				<SMappedFrom>StateView.NetworkFailureHandler.RemoteCaller.Tried</SMappedFrom>
+				<SMappedTo>StateView.ServiceController.ServiceController.Called</SMappedTo>
+			</StateInst>
+		</Instantiations>
+	</Global>
+	<StructuralView>
+		<ClassType complete="true" ID="ServiceController.ServiceController">
+			<visibility/>
+			<structName>ServiceController</structName>
+			<operations>
+				<function xsi:type="Method">
+					<funcID>ServiceController.ServiceController.serviceRequest</funcID>
+					<funcName>serviceRequest</funcName>
+					<isMIP>false</isMIP>
+					<stateChartID/>
+					<returnType/>
+				</function>
+				<function xsi:type="Method">
+					<funcID>ServiceController.ServiceController.disableGUI</funcID>
+					<funcName>disableGUI</funcName>
+					<isMIP>false</isMIP>
+					<stateChartID/>
+					<returnType/>
+				</function>
+				<function xsi:type="Method">
+					<funcID>ServiceController.ServiceController.updateGUI</funcID>
+					<funcName>updateGUI</funcName>
+					<isMIP>false</isMIP>
+					<stateChartID/>
+					<returnType/>
+				</function>
+				<function xsi:type="Method">
+					<funcID>ServiceController.ServiceController.finished</funcID>
+					<funcName>finished</funcName>
+					<isMIP>false</isMIP>
+					<stateChartID/>
+					<returnType/>
+				</function>
+			</operations>
+			<stateChartID>StateView.ServiceController.ServiceController</stateChartID>
+		</ClassType>
+			</StructuralView>
+	<StateView stateViewName="StateView.ServiceController">
+		<statechart id="StateView.ServiceController.ServiceController">
+			<state type="default">
+				<stateName>Waiting</stateName>
+				<transition>
+					<event>serviceRequest</event>
+					<action type="methodCall">disableGUI</action>
+					<nextState>Working</nextState>
+				</transition>
+			</state>
+			<state type="composite">
+				<stateName>Working</stateName>
+				<substate>Calling</substate>
+				<substate>Called</substate>
+				<transition>
+					<event>finished</event>
+					<nextState>Waiting</nextState>
+				</transition>
+			</state>
+			<state type="default">
+				<stateName>Calling</stateName>
+				<internalEvent>
+					<eventName>entry</eventName>
+					<action type="methodCall">callRemoteService</action>
+				</internalEvent>
+				<transition>
+					<event>acknowledged</event>
+					<action type="methodCall">logReturnValue</action>
+					<action type="methodCall">updateGUI</action>
+					<nextState>Called</nextState>
+				</transition>
+			</state>
+			<state type="actual">
+				<stateName>Called</stateName>
+				<internalEvent>
+					<eventName>entry</eventName>
+					<action type="methodCall">enableGUI</action>
+				</internalEvent>
+				<transition/>
+			</state>
+		</statechart>
+	</StateView>
+</Aspect>

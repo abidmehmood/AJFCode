@@ -1,0 +1,1 @@
+This directory contains the aspect-oriented code for systems generated using the AJFCode approach. Two directories provided here contain complete project files which may be imported to Eclipse or Intellij IDEA IDEs. 

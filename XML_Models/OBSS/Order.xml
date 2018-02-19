@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Aspect xmlns="http://utm.my/serg" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://utm.my/serg D:\Copy\XMLSpy-workspace\RAM-1.2.xsd">
+	<Global>
+		<ProjectName>obss</ProjectName>
+		<AspectName>Order</AspectName>
+		<DependsOn>
+			<DependsOnAspect>Persistence</DependsOnAspect>
+			<DependsOnAspect>CurrencyConversion</DependsOnAspect>
+			<DependsOnAspect>Encryption</DependsOnAspect>
+		</DependsOn>
+		<StructUnit>Order</StructUnit>
+		<StructUnit>Customer</StructUnit>
+		<StructUnit>CreditCardCharge</StructUnit>
+		<StructUnit>Book</StructUnit>
+		<StructUnit>ShoppingCart</StructUnit>
+		<Instantiations>
+			<ClassInst>
+				<CMappedFrom>Persistence.Persistable</CMappedFrom>
+				<CMappedTo>Order.Order</CMappedTo>
+			</ClassInst>
+			<ClassInst>
+				<CMappedFrom>CurrencyConversion.Convertible</CMappedFrom>
+				<CMappedTo>Order.CreditCardCharge</CMappedTo>
+			</ClassInst>
+			<ClassInst>
+				<CMappedFrom>Encryption.Encryptable</CMappedFrom>
+				<CMappedTo>Order.CreditCardCharge</CMappedTo>
+			</ClassInst>
+			<StateInst>
+				<SMappedFrom>StateView.Peristence.Persistable.UpdateRequired</SMappedFrom>
+				<SMappedTo>StateView.Order.Order.Unsubmitted</SMappedTo>
+			</StateInst>
+			<StateInst>
+				<SMappedFrom>StateView.CurrencyConversion.Convertible.ConversionRequired</SMappedFrom>
+				<SMappedTo>StateView.Order.Order.EurosPayment</SMappedTo>
+			</StateInst>
+			<StateInst>
+				<SMappedFrom>StateView.Encryption.Encryptable.EncryptionRequired</SMappedFrom>
+				<SMappedTo>StateView.Order.Order.DollarsPayment</SMappedTo>
+			</StateInst>
+			<StateInst>
+				<SMappedFrom>StateView.Encryption.Encryptable.Encrypted</SMappedFrom>
+				<SMappedTo>StateView.Order.Order.EncryptedPayment</SMappedTo>
+			</StateInst>
+		</Instantiations>
+	</Global>
+	<StructuralView>
+		<ClassType complete="true" ID="Order.Order">
+			<visibility/>
+			<structName>Order</structName>
+			<operations>
+				<function xsi:type="Method">
+					<funcID>Order.Order.newOrder</funcID>
+					<funcName>newOrder</funcName>
+					<isMIP>false</isMIP>
+				</function>
+				<function xsi:type="Method">
+					<funcID>Order.Order.addSelection</funcID>
+					<funcName>addSelection</funcName>
+					<isMIP>false</isMIP>
+				</function>
+				<function xsi:type="Method">
+					<funcID>Order.Order.checkout</funcID>
+					<funcName>checkout</funcName>
+					<isMIP>false</isMIP>
+				</function>
+				<function xsi:type="Method">
+					<funcID>Order.Order.paymentApproved</funcID>
+					<funcName>paymentApproved</funcName>
+					<isMIP>false</isMIP>
+				</function>
+				<function xsi:type="Method">
+					<funcID>Order.Order.paymentDeclined</funcID>
+					<funcName>paymentDeclined</funcName>
+					<isMIP>false</isMIP>
+				</function>
+				<function xsi:type="Method">
+					<funcID>Order.Order.orderDelivered</funcID>
+					<funcName>orderDelivered</funcName>
+					<isMIP>false</isMIP>
+				</function>
+			</operations>
+			<data>
+				<field>
+					<fieldName>orderID</fieldName>
+					<fieldType>long</fieldType>
+				</field>
+			</data>
+			<association roleName="isPlacedBy">
+				<classID>Order.Customer</classID>
+				<minParticipation>0</minParticipation>
+				<maxParticipation>1</maxParticipation>
+			</association>
+			<association roleName="isPaidFor">
+				<classID>Order.CreditCardCharge</classID>
+				<minParticipation>0</minParticipation>
+				<maxParticipation>1</maxParticipation>
+			</association>
+			<stateChartID>StateView.Order.Order</stateChartID>
+		</ClassType>
+		<ClassType complete="true" ID="Order.Customer">
+			<visibility/>
+			<structName>Customer</structName>
+			<data>
+				<field get="true" set="true">
+					<fieldName>name</fieldName>
+					<fieldType>String</fieldType>
+				</field>
+				<field get="true" set="true">
+					<fieldName>email</fieldName>
+					<fieldType>String</fieldType>
+				</field>
+				<field get="true" set="true">
+					<fieldName>shippingAddress</fieldName>
+					<fieldType>String</fieldType>
+				</field>
+				<field get="true" set="true">
+					<fieldName>phone</fieldName>
+					<fieldType>String</fieldType>
+				</field>
+			</data>
+			<association roleName="places">
+				<classID>Order.Order</classID>
+				<minParticipation>1</minParticipation>
+				<maxParticipation>n</maxParticipation>
+			</association>
+		</ClassType>
+		<ClassType complete="true" ID="Order.CreditCardCharge">
+			<visibility/>
+			<structName>CreditCardCharge</structName>
+			<operations>
+				<function xsi:type="Method">
+					<funcID>Order.CreditCardCharge.charge</funcID>
+					<funcName>charge</funcName>
+					<isMIP>false</isMIP>
+				</function>
+				<function xsi:type="Method">
+					<funcID>Order.CreditCardCharge.chargeSuccessful</funcID>
+					<funcName>chargeSuccessful</funcName>
+					<isMIP>false</isMIP>
+				</function>
+				<function xsi:type="Method">
+					<funcID>Order.CreditCardCharge.chargeUnsuccessful</funcID>
+					<funcName>chargeUnsuccessful</funcName>
+					<isMIP>false</isMIP>
+				</function>
+			</operations>
+			<data>
+				<field>
+					<fieldName>tranID</fieldName>
+					<fieldType>long</fieldType>
+				</field>
+				<field>
+					<fieldName>tranDate</fieldName>
+					<fieldType>Date</fieldType>
+				</field>
+				<field>
+					<fieldName>amount</fieldName>
+					<fieldType>long</fieldType>
+				</field>
+				<field>
+					<fieldName>accNum</fieldName>
+					<fieldType>long</fieldType>
+				</field>
+				<field>
+					<fieldName>ccHolderName</fieldName>
+					<fieldType>String</fieldType>
+				</field>
+				<field>
+					<fieldName>ccHolderAddress</fieldName>
+					<fieldType>String</fieldType>
+				</field>
+				<field>
+					<fieldName>ccExpiry</fieldName>
+					<fieldType>Date</fieldType>
+				</field>
+			</data>
+			<association roleName="paysFor">
+				<classID>Order.Order</classID>
+				<minParticipation>1</minParticipation>
+				<maxParticipation>1</maxParticipation>
+			</association>
+		</ClassType>
+		<ClassType complete="true" ID="Order.Book">
+			<visibility/>
+			<structName>Book</structName>
+		</ClassType>
+		<ClassType complete="true" ID="Order.ShoppingCart">
+			<visibility/>
+			<structName>ShoppingCart</structName>
+		</ClassType>
+	</StructuralView>
+	<StateView stateViewName="StateView.Order">
+		<statechart id="StateView.Order.Order">
+			<state type="default">
+				<stateName>Uninitialized</stateName>
+				<transition>
+					<event>newOrder</event>
+					<action>newOrder</action>
+					<nextState>Unsubmitted</nextState>
+				</transition>
+			</state>
+			<state type="actual">
+				<stateName>Unsubmitted</stateName>
+				<transition>
+					<event>addSelection</event>
+					<action>addSelection</action>
+				</transition>
+				<transition>
+					<event>checkout</event>
+					<action>checkout</action>
+					<nextState>Processing</nextState>
+				</transition>
+			</state>
+			<state type="composite">
+				<stateName>Processing</stateName>
+				<substate>EurosPayment</substate>
+				<substate>DollarsPayment</substate>
+				<substate>EncryptedPayment</substate>
+				<transition>
+					<event>paymentDeclined</event>
+					<event>paymentDeclined</event>
+				</transition>
+				<transition>
+					<event>paymentApproved</event>
+					<action>paymentApproved</action>
+					<nextState>Shipped</nextState>
+				</transition>
+			</state>
+			<state type="default">
+				<stateName>EurosPayment</stateName>
+				<transition>
+					<event>convert</event>
+					<action>convert</action>
+					<nextState>DollarsPayment</nextState>
+				</transition>
+			</state>
+			<state type="actual">
+				<stateName>DollarsPayment</stateName>
+				<transition>
+					<event>encrypt</event>
+					<event>encrypt</event>
+					<nextState>EncryptedPayment</nextState>
+				</transition>
+			</state>
+			<state type="actual">
+				<stateName>EncryptedPayment</stateName>
+				<transition/>
+			</state>
+			<state type="actual">
+				<stateName>Shipped</stateName>
+				<transition>
+					<event>orderDelivered</event>
+					<action>orderDelivered</action>
+					<nextState>Delivered</nextState>
+				</transition>
+			</state>
+			<state type="default">
+				<stateName>Delivered</stateName>
+				<transition/>
+			</state>
+		</statechart>
+	</StateView>
+</Aspect>

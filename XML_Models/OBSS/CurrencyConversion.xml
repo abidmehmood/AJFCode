@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Aspect xmlns="http://utm.my/serg" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://utm.my/serg D:\Copy\XMLSpy-workspace\RAM-1.2.xsd">
+	<Global>
+		<ProjectName>obss</ProjectName>
+		<AspectName>CurrencyConversion</AspectName>
+		<StructUnit>Convertible</StructUnit>
+		<StructUnit>Currency</StructUnit>
+		<MandatoryInstParam MIPType="class">Convertible</MandatoryInstParam>
+	</Global>
+	<StructuralView>
+		<ClassType complete="true" ID="CurrencyConversion.Currency">
+			<visibility/>
+			<structName>Currency</structName>
+			<operations>
+				<function xsi:type="Method">
+					<funcName>readExRate</funcName>
+					<param paramType="String">locale</param>
+					<isMIP>false</isMIP>
+				</function>
+				<function xsi:type="Method">
+					<funcName>convert</funcName>
+					<param paramType="CurrencyConversion.Currency">source</param>
+					<param paramType="CurrencyConversion.Currency">target</param>
+					<isMIP>false</isMIP>
+					<returnType>long</returnType>
+				</function>
+				<function xsi:type="Method">
+					<funcName>getLocale</funcName>
+					<isMIP>false</isMIP>
+					<returnType>String</returnType>
+				</function>
+			</operations>
+		</ClassType>
+		<ClassType complete="false" ID="CurrencyConversion.Convertible">
+			<visibility/>
+			<structName>Convertible</structName>
+			<operations>
+				<function xsi:type="Method">
+					<funcName>convert</funcName>
+					<param paramType="CurrencyConversion.Currency">source</param>
+					<param paramType="CurrencyConversion.Currency">target</param>
+					<isMIP>false</isMIP>
+					<returnType>long</returnType>
+				</function>
+			</operations>
+			<association roleName="converter">
+				<classID>CurrencyConversion.Currency</classID>
+				<minParticipation/>
+				<maxParticipation/>
+			</association>
+			<stateChartID>StateView.CurrencyConversion.Convertible</stateChartID>
+		</ClassType>
+	</StructuralView>
+	<StateView stateViewName="StateView.CurrencyConversion">
+		<statechart-aspectual id="StateView.CurrencyConversion.Convertible">
+			<pointcut>
+				<state complete="true">ConversionRequired</state>
+				<state complete="false">Converted</state>
+			</pointcut>
+			<advice>
+				<state type="actual">
+					<stateName>ConversionRequired</stateName>
+					<transition>
+						<event>convert</event>
+						<action>Convertible.convert</action>
+						<nextState>Converted</nextState>
+					</transition>
+				</state>
+				<state type="actual">
+					<stateName>converted</stateName>
+					<transition/>
+				</state>
+			</advice>
+		</statechart-aspectual>
+	</StateView>
+</Aspect>

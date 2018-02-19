@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Aspect xsi:schemaLocation="http://utm.my/serg RAM-1.2.xsd" xmlns="http://utm.my/serg" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<Global>
+		<ProjectName>networkmanagement</ProjectName>
+		<AspectName>NetworkFailureHandler</AspectName>
+		<DependsOn>
+			<DependsOnAspect/>
+		</DependsOn>
+		<StructUnit>RemoteCaller</StructUnit>
+		<MandatoryInstParam MIPType="class">RemoteCaller</MandatoryInstParam>
+		<Instantiations>
+			<ClassInst>
+				<CMappedFrom/>
+				<CMappedTo/>
+			</ClassInst>
+			<StateInst>
+				<SMappedFrom/>
+				<SMappedTo/>
+			</StateInst>
+		</Instantiations>
+	</Global>
+	<StructuralView>
+		<ClassType complete="false" ID="NetworkFailureHandler.RemoteCaller">
+			<visibility/>
+			<structName/>
+			<parent/>
+			<realizes/>
+			<operations>
+				<function xsi:type="Method">
+					<funcID>NetworkFailureHandler.RemoteCaller.acknowledged</funcID>
+					<funcName>acknowledged</funcName>
+					<param paramType=""/>
+					<isMIP>false</isMIP>
+					<stateChartID/>
+					<returnType/>
+				</function>
+				<function xsi:type="Method">
+					<funcID>NetworkFailureHandler.RemoteCaller.notAcknowledged</funcID>
+					<funcName>notAcknowledged</funcName>
+					<isMIP>false</isMIP>
+					<stateChartID/>
+					<returnType/>
+				</function>
+				<function xsi:type="Method">
+					<funcID>NetworkFailureHandler.RemoteCaller.callRemoteService</funcID>
+					<funcName>callRemoteService</funcName>
+					<isMIP>false</isMIP>
+					<stateChartID/>
+					<returnType>boolean</returnType>
+				</function>
+				<function xsi:type="Method">
+					<funcID>NetworkFailureHandler.RemoteCaller.enableGUI</funcID>
+					<funcName>enableGUI</funcName>
+					<isMIP>false</isMIP>
+					<stateChartID/>
+					<returnType/>
+				</function>
+			</operations>
+			<data>
+				<field>
+					<visibility>private</visibility>
+					<fieldName>retries</fieldName>
+					<fieldType>int</fieldType>
+					<initVal/>
+				</field>
+				<field>
+					<visibility>private</visibility>
+					<fieldName>MAX</fieldName>
+					<fieldType>int</fieldType>
+					<initVal>5</initVal>
+				</field>
+			</data>
+			<stateChartID>StateView.NetworkFailureHandler.RemoteCaller</stateChartID>
+		</ClassType>
+	</StructuralView>
+	<StateView stateViewName="StateView.NetworkFailureHandler">
+		<statechart-aspectual name="" id="StateView.NetworkFailureHandler.RemoteCaller">
+			<pointcut>
+				<state complete="true">Triable</state>
+				<state complete="true">Tried</state>
+			</pointcut>
+			<advice>
+				<state type="default">
+					<stateName>Triable</stateName>
+					<internalEvent>
+						<eventName>entry</eventName>
+						<action type="methodCall">callRemoteService</action>
+						<action type="valueSet">retries=0</action>
+					</internalEvent>
+					<transition>
+						<event>notAcknowledged</event>
+						<guard>
+							<LHS type="identifier">retries</LHS>
+							<condition>greaterThan</condition>
+							<RHS type="identifier">MAX</RHS>
+						</guard>
+						<action/>
+						<nextState>Tried</nextState>
+					</transition>
+					<transition>
+						<event>acknowledged</event>
+						<action/>
+						<nextState>Tried</nextState>
+					</transition>
+					<transition>
+						<event>notAcknowledged</event>
+						<guard>
+							<LHS type="identifier"/>
+							<condition>lessThanEquals</condition>
+							<RHS type="identifier">MAX</RHS>
+						</guard>
+						<action>incrementRetries</action>
+						<nextState>Triable</nextState>
+					</transition>
+				</state>
+				<state type="actual">
+					<stateName>Tried</stateName>
+					<internalEvent>
+						<eventName>entry</eventName>
+						<action type="methodCall">enableGUI</action>
+					</internalEvent>
+					<transition/>
+				</state>
+			</advice>
+		</statechart-aspectual>
+	</StateView>
+</Aspect>
